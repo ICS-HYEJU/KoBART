@@ -3,13 +3,13 @@ import pandas as pd
 from torch.utils.data import DataLoader
 
 import lightning as L
-from transformers import PreTrainedTokenizer
+from transformers import PreTrainedTokenizerFast
 from data.dataset import KoBARTSummaryDataset
 
 class KobartSummaryDataModule(L.LightningDataModule):
     def __init__(self, train_file, test_file, max_len=512, batch_size=8, num_workers=0,
                  pretrained_name='gogamza/kobart-base-v1'):
-        super.__init__()
+        super().__init__()
         #
         self.bs = batch_size
         self.max_len = max_len
@@ -17,7 +17,7 @@ class KobartSummaryDataModule(L.LightningDataModule):
         #
         self.train_file_path = train_file
         self.test_file_path = test_file
-        self.tok = PreTrainedTokenizer.from_pretrained(pretrained_name)
+        self.tok = PreTrainedTokenizerFast.from_pretrained(pretrained_name)
 
     def setup(self, stage:str):
         if stage == 'fit':
@@ -60,10 +60,10 @@ if __name__ == '__main__':
     dataloader = KobartSummaryDataModule(
         train_file=cfg.dataset_info['train_file'],
         test_file=cfg.dataset_info['test_file'],
-        max_len = cfg.datasete_info['max_len'],
-        batch_size =  cfg.datasete_info['batch_size'],
-        num_workers = 0,
-        pretrained_name = 'gogamza/kobart-base-v1'
+        max_len =cfg.dataset_info['max_len'],
+        batch_size=cfg.dataset_info['batch_size'],
+        num_workers=0,
+        pretrained_name='gogamza/kobart-base-v1'
     )
     dataloader.setup('fit')
     for batch_idx, data in enumerate(dataloader.train_dataloader()):

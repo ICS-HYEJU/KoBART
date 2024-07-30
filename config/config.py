@@ -13,15 +13,15 @@ class Config(dict):
 def get_config_dict():
     dataset_info = dict(
         pretrained_name='gogamza/kobart-base-v1',
-        train_file='train.tsv',
-        test_file='test.tsv',
+        train_file='/storage/hjchoi/data_dacon/train.tsv',
+        test_file='/storage/hjchoi/data_dacon/test.tsv',
         batch_size=5,
         max_len=512,
         max_epoch=10,
         num_workers=0,
     )
     path = dict(
-        save_base_path = ' /home/hjchoi/PycharmProjects/KoBART/runs',
+        save_base_path = '/home/hjchoi/PycharmProjects/KoBART/runs',
     )
     model = dict(
         name='BART',
@@ -40,7 +40,7 @@ def get_config_dict():
     )
     weight_info=dict(
         checkpoint='./checkpoint',
-        save_firname='model_chp/{epoch:02d}-{val_loss:.3f}'
+        save_firname='model_chp/{epoch:02d}-{val_loss:.3f}',
     )
     device=dict(
         gpu_id=1,
@@ -54,4 +54,4 @@ def get_config_dict():
         weight_info=weight_info,
         device=device
     )
-    return config
+    return Config(config)
