@@ -1,0 +1,80 @@
+import numpy as np
+import pandas as pd
+
+import torch
+from torch.utils.data import Dataset, DataLoader
+
+from transformers import BartForConditionalGeneration, PreTrainedTokenizerFast
+from transformers.optimization import AdamW, get_linear_schedule_with_warmup
+
+from collections import defaultdict
+
+import os
+import glob
+import ast
+import json
+from tqdm import tqdm, trange
+from functools import partial
+
+import lightning as L
+from lightning.pytorch.callbacks import ModelCheckpoint
+
+from collections import defaultdict
+
+import streamlit as st
+
+class Config(dict):
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setitem__
+
+    @classmethod
+    def load(cls, file):
+        with open(file, 'r') as f:
+            config = json.loads(f.read())
+            return Config(config)
+
+def get_config_dict():
+    dataset_info = dict(
+        pretrained_name='gogamza/kobart-base-v1',
+        train_file='train.tsv',
+        test_file='test.tsv',
+        batch_size=5,
+        max_len=512,
+        max_epoch=10,
+        num_workers=0,
+    )
+    path = dict(
+        save_base_path = ' /home/hjchoi/PycharmProjects/KoBART/runs',
+    )
+    model = dict(
+        name='BART',
+    )
+    solver = dict(
+        name='AdamW',
+        lr=3e-4,
+        gradient_clip_val=1.0
+    )
+    scheduler=dict(
+        name='',
+        monitor='loss',
+        interval='step',
+        frequency=1,
+        mode='min'
+    )
+    weight_info=dict(
+        checkpoint='./checkpoint',
+        save_firname='model_chp/{epoch:02d}-{val_loss:.3f}'
+    )
+    device=dict(
+        gpu_id=1,
+    )
+    config=dict(
+        dataset_info=dataset_info,
+        path=path,
+        model=model,
+        solver=solver,
+        scheduler=scheduler,
+        weight_info=weight_info,
+        device=device
+    )
+    return config
